@@ -79,6 +79,8 @@ def check_permissions(permission, payload):
         return True
     except Exception as error:
         print("Permissions Failure")
+        print("Permission:", permission)
+        print("Payload:", payload)
         abort(401)
 
 '''

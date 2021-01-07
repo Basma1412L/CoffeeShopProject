@@ -17,7 +17,7 @@ CORS(app)
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
-# db_drop_and_create_all()
+db_drop_and_create_all()
 
 ## ROUTES
 '''
@@ -78,13 +78,10 @@ def retrive_drinks_details(auth):
 @requires_auth('post:drinks')
 def create_drink(auth):
     body = request.get_json()
-    print(body)
     title_p= body.get('title', None)
     recipe_p = body.get("recipe", [])
     if type(recipe_p) != list:
         recipe_p = [recipe_p]    
-    print(title_p)
-    print(recipe_p)
     try:
         if title_p and recipe_p:
             drink = Drink(
@@ -118,6 +115,7 @@ def create_drink(auth):
 def update_drink(auth,id):
     body = request.get_json()
     drink = Drink.query.filter_by(id=id).first_or_404()
+    print(drink)
     try:
         drink.title = json.dumps(body.get('title', drink.title))
         recipe_p = body.get("recipe", drink.recipe)
@@ -127,7 +125,7 @@ def update_drink(auth,id):
         drink.update()
         return jsonify({
                 'success': True,
-                'drinks': Drink.long(drink)
+                'drinks': [Drink.long(drink)]
             })
     except Exception as error:
         print("\nerror => {}\n".format(error))
